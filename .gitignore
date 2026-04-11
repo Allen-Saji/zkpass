@@ -1,2 +1,3 @@
 node_modules/\ncircuits/build/\ncircuits/*.ptau\n.env\n
 frontend/node_modules/\nfrontend/.next/\nfrontend/out/
+contracts/artifacts/\ncontracts/cache/\ncontracts/typechain-types/\ncontracts/node_modules/\ncontracts/.env
