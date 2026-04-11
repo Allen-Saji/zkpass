@@ -46,9 +46,9 @@ function VerifiedAttribute({ label, verified }: { label: string; verified: boole
 
 export function ProvePanel({ credential, zkReady }: ProvePanelProps) {
   const [flags, setFlags] = useState<DisclosureFlags>({
-    age: true,
-    jurisdiction: true,
-    kyc: true,
+    age: false,
+    jurisdiction: false,
+    kyc: false,
   });
 
   const { status, statusMessage, result, error, prove, reset } = useProver();

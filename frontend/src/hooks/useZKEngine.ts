@@ -33,8 +33,9 @@ export function useZKEngine() {
           throw new Error("Failed to fetch ZK assets");
         }
 
-        const wasmSize = Number(wasmRes.headers.get("content-length") || 0);
-        const zkeySize = Number(zkeyRes.headers.get("content-length") || 0);
+        // content-length may not be available in dev mode, use known sizes as fallback
+        const wasmSize = Number(wasmRes.headers.get("content-length") || 2950000);
+        const zkeySize = Number(zkeyRes.headers.get("content-length") || 4800000);
         const totalMB = ((wasmSize + zkeySize) / (1024 * 1024)).toFixed(1);
 
         setState({
