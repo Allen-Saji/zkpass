@@ -1,1 +1,2 @@
 node_modules/\ncircuits/build/\ncircuits/*.ptau\n.env\n
+frontend/node_modules/\nfrontend/.next/\nfrontend/out/
