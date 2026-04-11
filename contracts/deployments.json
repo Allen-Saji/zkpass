@@ -1,0 +1,10 @@
+{
+  "hashkeyTestnet": {
+    "chainId": 133,
+    "rpcUrl": "https://testnet.hsk.xyz",
+    "explorer": "https://testnet-explorer.hsk.xyz",
+    "Groth16Verifier": "0xba1D2B7A58Be84fCc07e1cC085AB39cB495604F2",
+    "ZKGatedPool": "0x50193Ff688db42c98f3cFb2B49E5FAD4236cb1Cd",
+    "deployedAt": "2026-04-11"
+  }
+}
