@@ -1,0 +1,66 @@
+#!/bin/bash
+set -e
+
+CIRCUIT_NAME="AgeCheck"
+CIRCUITS_DIR="$(cd "$(dirname "$0")/../circuits" && pwd)"
+BUILD_DIR="$CIRCUITS_DIR/build"
+PTAU="$CIRCUITS_DIR/powersOfTau28_hez_final_16.ptau"
+
+mkdir -p "$BUILD_DIR"
+
+echo "=== Step 1: Compile circuit ==="
+circom "$CIRCUITS_DIR/$CIRCUIT_NAME.circom" \
+  --r1cs --wasm --sym --inspect \
+  -o "$BUILD_DIR" \
+  -l "$CIRCUITS_DIR/../node_modules"
+
+echo ""
+echo "=== Step 2: Circuit info ==="
+snarkjs r1cs info "$BUILD_DIR/$CIRCUIT_NAME.r1cs"
+
+echo ""
+echo "=== Step 3: Groth16 setup (phase 2) ==="
+snarkjs groth16 setup \
+  "$BUILD_DIR/$CIRCUIT_NAME.r1cs" \
+  "$PTAU" \
+  "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey"
+
+echo ""
+echo "=== Step 4: Contribute to ceremony ==="
+snarkjs zkey contribute \
+  "$BUILD_DIR/${CIRCUIT_NAME}_0000.zkey" \
+  "$BUILD_DIR/${CIRCUIT_NAME}_final.zkey" \
+  --name="zkpass-dev" -v -e="random entropy for dev"
+
+echo ""
+echo "=== Step 5: Export verification key ==="
+snarkjs zkey export verificationkey \
+  "$BUILD_DIR/${CIRCUIT_NAME}_final.zkey" \
+  "$BUILD_DIR/verification_key.json"
+
+echo ""
+echo "=== Step 6: Calculate witness ==="
+snarkjs wtns calculate \
+  "$BUILD_DIR/${CIRCUIT_NAME}_js/${CIRCUIT_NAME}.wasm" \
+  "$CIRCUITS_DIR/input_age.json" \
+  "$BUILD_DIR/witness.wtns"
+
+echo ""
+echo "=== Step 7: Generate proof ==="
+snarkjs groth16 prove \
+  "$BUILD_DIR/${CIRCUIT_NAME}_final.zkey" \
+  "$BUILD_DIR/witness.wtns" \
+  "$BUILD_DIR/proof.json" \
+  "$BUILD_DIR/public.json"
+
+echo ""
+echo "=== Step 8: Verify proof ==="
+snarkjs groth16 verify \
+  "$BUILD_DIR/verification_key.json" \
+  "$BUILD_DIR/public.json" \
+  "$BUILD_DIR/proof.json"
+
+echo ""
+echo "=== DONE! First ZK proof verified successfully ==="
+echo "Public signals:"
+cat "$BUILD_DIR/public.json"
