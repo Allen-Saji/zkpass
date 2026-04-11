@@ -52,10 +52,18 @@ export function CredentialPanel({ credential, onLoad, loading }: CredentialPanel
       </div>
 
       {!credential ? (
-        <div className="space-y-6">
-          <p className="text-sm text-text-secondary">
+        <div className="space-y-4">
+          <p className="text-sm text-text-secondary leading-relaxed">
             Load a demo credential to begin the verification process.
+            Your private data never leaves the browser.
           </p>
+          <div className="py-3 px-4 rounded-xl bg-bg-elevated border border-border">
+            <p className="text-xs text-text-muted font-mono">
+              Credential: EdDSA/Baby JubJub signed<br />
+              Attributes: age, jurisdiction, KYC level<br />
+              Issuer: Mock Authority (dev)
+            </p>
+          </div>
           <button
             onClick={onLoad}
             disabled={loading}

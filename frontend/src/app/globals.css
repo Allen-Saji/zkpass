@@ -52,7 +52,7 @@
   --color-error-dim: var(--error-dim);
   --color-warning: var(--warning);
 
-  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-sans: var(--font-plus-jakarta), "Plus Jakarta Sans", system-ui, sans-serif;
   --font-mono: "SF Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
 }
 
