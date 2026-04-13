@@ -51,39 +51,39 @@ export function ArchitectureFlow() {
 
         {/* Step 1: Issuer */}
         <g className={activeStep === 0 ? "node-pulse" : ""}>
-          <rect x="40" y="70" width="140" height="80" rx="12" fill={activeStep === 0 ? "#222226" : "#1e1e22"} stroke={activeStep === 0 ? "#6CFF32" : "rgba(255,255,255,0.08)"} strokeWidth={activeStep === 0 ? 2 : 1} />
-          <text x="110" y="100" textAnchor="middle" fill={activeStep === 0 ? "#6CFF32" : "#fff"} fontSize="13" fontWeight="600">KYC Issuer</text>
-          <text x="110" y="120" textAnchor="middle" fill="rgba(224,232,255,0.5)" fontSize="10">EdDSA Sign</text>
-          <text x="110" y="135" textAnchor="middle" fill="rgba(224,232,255,0.3)" fontSize="9">Baby JubJub</text>
+          <rect x="30" y="70" width="140" height="80" rx="12" fill={activeStep === 0 ? "#222226" : "#1e1e22"} stroke={activeStep === 0 ? "#6CFF32" : "rgba(255,255,255,0.08)"} strokeWidth={activeStep === 0 ? 2 : 1} />
+          <text x="100" y="100" textAnchor="middle" fill={activeStep === 0 ? "#6CFF32" : "#fff"} fontSize="13" fontWeight="600">KYC Issuer</text>
+          <text x="100" y="120" textAnchor="middle" fill="rgba(224,232,255,0.5)" fontSize="10">EdDSA Sign</text>
+          <text x="100" y="135" textAnchor="middle" fill="rgba(224,232,255,0.3)" fontSize="9">Baby JubJub</text>
         </g>
 
         {/* Arrow 1: Issuer -> Credential */}
-        <line x1="180" y1="110" x2="220" y2="110" className={`flow-line ${activeStep === 0 ? "flow-line-active" : ""}`} stroke={activeStep === 0 ? "#6CFF32" : "rgba(255,255,255,0.15)"} strokeWidth="2" />
-        <polygon points="218,105 228,110 218,115" fill={activeStep === 0 ? "#6CFF32" : "rgba(255,255,255,0.15)"} />
-        {activeStep === 0 && <text x="205" y="95" textAnchor="start" fill="#6CFF32" fontSize="9" fontFamily="monospace">credential</text>}
+        <line x1="170" y1="110" x2="270" y2="110" className={`flow-line ${activeStep === 0 ? "flow-line-active" : ""}`} stroke={activeStep === 0 ? "#6CFF32" : "rgba(255,255,255,0.15)"} strokeWidth="2" />
+        <polygon points="268,105 278,110 268,115" fill={activeStep === 0 ? "#6CFF32" : "rgba(255,255,255,0.15)"} />
+        {activeStep === 0 && <text x="220" y="100" textAnchor="middle" fill="#6CFF32" fontSize="10" fontFamily="monospace">credential</text>}
 
         {/* Step 2: Credential + Secret */}
         <g className={activeStep === 1 ? "node-pulse" : ""}>
-          <rect x="230" y="60" width="150" height="100" rx="12" fill={activeStep === 1 ? "#222226" : "#1e1e22"} stroke={activeStep === 1 ? "#6CFF32" : "rgba(255,255,255,0.08)"} strokeWidth={activeStep === 1 ? 2 : 1} />
-          <text x="305" y="88" textAnchor="middle" fill={activeStep === 1 ? "#6CFF32" : "#fff"} fontSize="13" fontWeight="600">User Browser</text>
-          <text x="305" y="108" textAnchor="middle" fill="rgba(224,232,255,0.5)" fontSize="9">holderSecret (private)</text>
-          <text x="305" y="123" textAnchor="middle" fill="rgba(224,232,255,0.5)" fontSize="9">identityCommitment</text>
-          <text x="305" y="148" textAnchor="middle" fill="rgba(224,232,255,0.3)" fontSize="9">Poseidon(secret)</text>
+          <rect x="280" y="60" width="160" height="100" rx="12" fill={activeStep === 1 ? "#222226" : "#1e1e22"} stroke={activeStep === 1 ? "#6CFF32" : "rgba(255,255,255,0.08)"} strokeWidth={activeStep === 1 ? 2 : 1} />
+          <text x="360" y="88" textAnchor="middle" fill={activeStep === 1 ? "#6CFF32" : "#fff"} fontSize="13" fontWeight="600">User Browser</text>
+          <text x="360" y="108" textAnchor="middle" fill="rgba(224,232,255,0.5)" fontSize="9">holderSecret (private)</text>
+          <text x="360" y="123" textAnchor="middle" fill="rgba(224,232,255,0.5)" fontSize="9">identityCommitment</text>
+          <text x="360" y="148" textAnchor="middle" fill="rgba(224,232,255,0.3)" fontSize="9">Poseidon(secret)</text>
         </g>
 
         {/* Arrow 2: Browser -> ZK Proof */}
-        <line x1="305" y1="160" x2="305" y2="195" className={`flow-line ${activeStep === 1 ? "flow-line-active" : ""}`} stroke={activeStep === 1 ? "#6CFF32" : "rgba(255,255,255,0.15)"} strokeWidth="2" />
-        <polygon points="300,193 305,203 310,193" fill={activeStep === 1 ? "#6CFF32" : "rgba(255,255,255,0.15)"} />
-        {activeStep === 1 && <text x="330" y="182" fill="#6CFF32" fontSize="8" fontFamily="monospace">witness</text>}
+        <line x1="360" y1="160" x2="360" y2="195" className={`flow-line ${activeStep === 1 ? "flow-line-active" : ""}`} stroke={activeStep === 1 ? "#6CFF32" : "rgba(255,255,255,0.15)"} strokeWidth="2" />
+        <polygon points="355,193 360,203 365,193" fill={activeStep === 1 ? "#6CFF32" : "rgba(255,255,255,0.15)"} />
+        {activeStep === 1 && <text x="385" y="182" fill="#6CFF32" fontSize="8" fontFamily="monospace">witness</text>}
 
         {/* Step 3: ZK Proof Generation */}
         <g className={activeStep === 2 ? "node-pulse" : ""}>
-          <rect x="220" y="205" width="170" height="100" rx="12" fill={activeStep === 2 ? "#222226" : "#1e1e22"} stroke={activeStep === 2 ? "#6CFF32" : "rgba(255,255,255,0.08)"} strokeWidth={activeStep === 2 ? 2 : 1} />
-          <text x="305" y="232" textAnchor="middle" fill={activeStep === 2 ? "#6CFF32" : "#fff"} fontSize="13" fontWeight="600">ZK Proof Engine</text>
-          <text x="305" y="252" textAnchor="middle" fill="rgba(224,232,255,0.5)" fontSize="9">snarkjs Groth16</text>
-          <text x="305" y="267" textAnchor="middle" fill="rgba(224,232,255,0.5)" fontSize="9">10,303 constraints</text>
-          <text x="305" y="282" textAnchor="middle" fill="rgba(224,232,255,0.3)" fontSize="9">WASM Web Worker</text>
-          <text x="305" y="296" textAnchor="middle" fill="rgba(224,232,255,0.3)" fontSize="8">disclosure bitmask: 0b101</text>
+          <rect x="275" y="205" width="170" height="100" rx="12" fill={activeStep === 2 ? "#222226" : "#1e1e22"} stroke={activeStep === 2 ? "#6CFF32" : "rgba(255,255,255,0.08)"} strokeWidth={activeStep === 2 ? 2 : 1} />
+          <text x="360" y="232" textAnchor="middle" fill={activeStep === 2 ? "#6CFF32" : "#fff"} fontSize="13" fontWeight="600">ZK Proof Engine</text>
+          <text x="360" y="252" textAnchor="middle" fill="rgba(224,232,255,0.5)" fontSize="9">snarkjs Groth16</text>
+          <text x="360" y="267" textAnchor="middle" fill="rgba(224,232,255,0.5)" fontSize="9">10,303 constraints</text>
+          <text x="360" y="282" textAnchor="middle" fill="rgba(224,232,255,0.3)" fontSize="9">WASM Web Worker</text>
+          <text x="360" y="296" textAnchor="middle" fill="rgba(224,232,255,0.3)" fontSize="8">disclosure bitmask: 0b101</text>
         </g>
 
         {/* Arrow 3: Proof -> Selective Disclosure labels */}
@@ -97,9 +97,13 @@ export function ArchitectureFlow() {
         </g>
 
         {/* Arrow 4: Proof -> On-chain */}
-        <line x1="390" y1="255" x2="610" y2="120" className={`flow-line ${activeStep === 3 ? "flow-line-active" : ""}`} stroke={activeStep === 3 ? "#6CFF32" : "rgba(255,255,255,0.15)"} strokeWidth="2" />
+        <line x1="445" y1="255" x2="610" y2="120" className={`flow-line ${activeStep === 3 ? "flow-line-active" : ""}`} stroke={activeStep === 3 ? "#6CFF32" : "rgba(255,255,255,0.15)"} strokeWidth="2" />
         <polygon points="605,116 615,118 608,126" fill={activeStep === 3 ? "#6CFF32" : "rgba(255,255,255,0.15)"} />
-        {activeStep === 3 && <text x="500" y="175" textAnchor="middle" fill="#6CFF32" fontSize="8" fontFamily="monospace" transform="rotate(-20, 500, 175)">proof (a, b, c) + signals</text>}
+        {activeStep === 3 && (
+          <>
+            <text x="480" y="180" fill="#6CFF32" fontSize="9" fontFamily="monospace">proof + signals</text>
+          </>
+        )}
 
         {/* Step 4: On-chain Verification */}
         <g className={activeStep === 3 ? "node-pulse" : ""}>
