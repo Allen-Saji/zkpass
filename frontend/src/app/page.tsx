@@ -48,9 +48,9 @@ export default function HomePage() {
 
       {/* How it works */}
       <div className="mb-20">
-        <h2 className="text-sm font-semibold text-accent uppercase tracking-widest text-center mb-10">
+        <Link href="/how-it-works" className="block text-sm font-semibold text-accent uppercase tracking-widest text-center mb-10 hover:underline underline-offset-4">
           How it works
-        </h2>
+        </Link>
         <div className="grid md:grid-cols-3 gap-6">
           <StepCard
             icon={<UserCheck className="w-6 h-6" />}
