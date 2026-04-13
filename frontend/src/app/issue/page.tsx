@@ -233,10 +233,10 @@ export default function IssuePage() {
                   Download JSON
                 </button>
                 <Link
-                  href="/claim"
+                  href="/wallet"
                   className="flex-1 py-2.5 rounded-xl bg-accent text-bg-base text-sm font-semibold hover:brightness-110 transition-all flex items-center justify-center gap-2"
                 >
-                  Claim Airdrop
+                  View in Wallet
                 </Link>
               </div>
 

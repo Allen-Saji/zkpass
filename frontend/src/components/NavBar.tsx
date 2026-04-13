@@ -7,6 +7,7 @@ import { Shield } from "lucide-react";
 const NAV_LINKS = [
   { href: "/", label: "Home" },
   { href: "/issue", label: "Get Credential" },
+  { href: "/wallet", label: "Wallet" },
   { href: "/claim", label: "Claim Airdrop" },
 ];
 
