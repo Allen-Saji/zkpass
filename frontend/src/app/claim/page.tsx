@@ -357,7 +357,7 @@ export default function ClaimPage() {
 
           {/* Error states */}
           {(prover.error || claim.error) && (
-            <div className="rounded-xl border border-error bg-error-dim p-4">
+            <div className="rounded-xl border border-error bg-error-dim p-4 overflow-hidden">
               <div className="flex items-center gap-2 mb-1">
                 <AlertCircle className="w-4 h-4 text-error flex-shrink-0" />
                 <span className="text-sm font-medium text-error">
@@ -368,7 +368,7 @@ export default function ClaimPage() {
                     : "Error"}
                 </span>
               </div>
-              <p className="text-xs text-text-secondary">
+              <p className="text-xs text-text-secondary break-words">
                 {prover.error?.includes("Assert Failed")
                   ? "Your credential does not satisfy the selected disclosure checks. This can happen if:"
                   : claim.error || prover.error}

@@ -72,21 +72,32 @@ export function useClaim() {
 
         setStatus("done");
       } catch (err: unknown) {
-        const error = err as { code?: number | string; message?: string; reason?: string };
+        const error = err as { code?: number | string; message?: string; reason?: string; data?: string };
+        const msg = [error.reason, error.message, error.data].join(" ");
+
+        // Custom error selectors (first 4 bytes of keccak256)
+        // AlreadyClaimed()     = 0x646cf558
+        // InvalidProof()       = 0x09bde339
+        // UntrustedIssuer()    = 0x...
+        // WrongNullifierScope()= 0x...
+        // InsufficientDisclosure() = 0x...
+
         if (error.code === 4001 || error.code === "ACTION_REJECTED") {
-          setError("Transaction rejected by user");
-        } else if (error.reason?.includes("AlreadyClaimed") || error.message?.includes("AlreadyClaimed")) {
+          setError("Transaction rejected by user.");
+        } else if (msg.includes("AlreadyClaimed") || msg.includes("0x646cf558")) {
           setError("Already claimed! Each identity can only claim once.");
-        } else if (error.reason?.includes("UntrustedIssuer") || error.message?.includes("UntrustedIssuer")) {
+        } else if (msg.includes("UntrustedIssuer")) {
           setError("Credential issuer is not registered in the on-chain registry.");
-        } else if (error.reason?.includes("InvalidProof") || error.message?.includes("InvalidProof")) {
+        } else if (msg.includes("InvalidProof")) {
           setError("ZK proof verification failed on-chain.");
-        } else if (error.reason?.includes("WrongNullifierScope") || error.message?.includes("WrongNullifierScope")) {
+        } else if (msg.includes("WrongNullifierScope")) {
           setError("Proof was generated for a different airdrop scope.");
-        } else if (error.reason?.includes("InsufficientDisclosure") || error.message?.includes("InsufficientDisclosure")) {
+        } else if (msg.includes("InsufficientDisclosure")) {
           setError("Required disclosure flags not set. Age and jurisdiction must be proven.");
+        } else if (msg.includes("execution reverted") || msg.includes("CALL_EXCEPTION")) {
+          setError("Transaction reverted on-chain. The proof may be invalid or already used.");
         } else {
-          setError(error.reason || error.message || "Transaction failed");
+          setError(error.reason || "Transaction failed. Check your wallet and try again.");
         }
         setStatus("error");
       }
