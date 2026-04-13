@@ -9,6 +9,7 @@ import { useProver } from "@/hooks/useProver";
 import { useClaim } from "@/hooks/useClaim";
 import { useAirdropStats } from "@/hooks/useAirdropStats";
 import { useZKEngine } from "@/hooks/useZKEngine";
+import { useWalletDiscovery, DiscoveredWallet } from "@/hooks/useWalletDiscovery";
 import { PassportCard } from "@/components/PassportCard";
 import {
   Coins,
@@ -38,6 +39,7 @@ export default function ClaimPage() {
   const claim = useClaim();
   const { stats, loading: statsLoading, refetch: refetchStats } = useAirdropStats();
   const zkEngine = useZKEngine();
+  const { wallets, selected: selectedWallet, selectWallet } = useWalletDiscovery();
 
   useEffect(() => {
     setCredentials(loadCredentials());
@@ -62,7 +64,7 @@ export default function ClaimPage() {
     try {
       const input = buildWitnessInput(selectedCredential, flags, holderSecret);
       const result = await prover.prove(input);
-      await claim.claimAirdrop(result.calldata);
+      await claim.claimAirdrop(result.calldata, selectedWallet?.provider);
       refetchStats();
     } catch {
       // Error state handled by hooks
@@ -212,6 +214,33 @@ export default function ClaimPage() {
               </>
             )}
           </div>
+
+          {/* Wallet picker */}
+          {wallets.length > 0 && (
+            <div className="rounded-xl border border-border bg-bg-surface p-4">
+              <span className="text-xs text-text-secondary uppercase tracking-wider block mb-2">
+                Select Wallet
+              </span>
+              <div className="flex flex-wrap gap-2">
+                {wallets.map((w) => (
+                  <button
+                    key={w.info.uuid}
+                    onClick={() => selectWallet(w)}
+                    className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-xs font-medium transition-colors ${
+                      selectedWallet?.info.uuid === w.info.uuid
+                        ? "border-accent bg-accent-dim text-accent"
+                        : "border-border text-text-secondary hover:border-border-hover hover:text-text-primary"
+                    }`}
+                  >
+                    {w.info.icon && (
+                      <img src={w.info.icon} alt={w.info.name} className="w-4 h-4 rounded" />
+                    )}
+                    {w.info.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Main action button */}
           <button

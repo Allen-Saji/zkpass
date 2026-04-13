@@ -6,24 +6,12 @@ import { HASHKEY_TESTNET, CONTRACTS, AIRDROP_ABI } from "@/lib/constants";
 import { parseCalldata } from "@/lib/buildInput";
 import { ClaimStatus } from "@/lib/types";
 
-interface EthereumProvider {
-  request: (args: { method: string; params?: unknown[] }) => Promise<unknown>;
-  on: (event: string, handler: (...args: unknown[]) => void) => void;
-  removeListener: (event: string, handler: (...args: unknown[]) => void) => void;
-}
-
-declare global {
-  interface Window {
-    ethereum?: EthereumProvider;
-  }
-}
-
 export function useClaim() {
   const [status, setStatus] = useState<ClaimStatus>("idle");
   const [txHash, setTxHash] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const ensureChain = useCallback(async (provider: EthereumProvider) => {
+  const ensureChain = useCallback(async (provider: any) => {
     try {
       await provider.request({
         method: "wallet_switchEthereumChain",
@@ -51,26 +39,27 @@ export function useClaim() {
   }, []);
 
   const claimAirdrop = useCallback(
-    async (calldata: string) => {
+    async (calldata: string, walletProvider?: any) => {
       setError(null);
       setTxHash(null);
 
-      if (!window.ethereum) {
-        setError("MetaMask not detected. Please install MetaMask.");
+      const provider = walletProvider || (window as any).ethereum;
+      if (!provider) {
+        setError("No wallet detected. Please install MetaMask or another EVM wallet.");
         setStatus("error");
         return;
       }
 
       try {
         setStatus("connecting");
-        await window.ethereum.request({ method: "eth_requestAccounts" });
+        await provider.request({ method: "eth_requestAccounts" });
 
         setStatus("switching-chain");
-        await ensureChain(window.ethereum);
+        await ensureChain(provider);
 
         setStatus("sending");
-        const provider = new BrowserProvider(window.ethereum);
-        const signer = await provider.getSigner();
+        const ethersProvider = new BrowserProvider(provider);
+        const signer = await ethersProvider.getSigner();
 
         const contract = new Contract(CONTRACTS.zkAirdrop, AIRDROP_ABI, signer);
         const { a, b, c, signals } = parseCalldata(calldata);
@@ -94,6 +83,8 @@ export function useClaim() {
           setError("ZK proof verification failed on-chain.");
         } else if (error.reason?.includes("WrongNullifierScope") || error.message?.includes("WrongNullifierScope")) {
           setError("Proof was generated for a different airdrop scope.");
+        } else if (error.reason?.includes("InsufficientDisclosure") || error.message?.includes("InsufficientDisclosure")) {
+          setError("Required disclosure flags not set. Age and jurisdiction must be proven.");
         } else {
           setError(error.reason || error.message || "Transaction failed");
         }
