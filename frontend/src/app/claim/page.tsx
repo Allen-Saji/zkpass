@@ -29,9 +29,9 @@ export default function ClaimPage() {
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [holderSecret, setHolderSecret] = useState<string | null>(null);
   const [flags, setFlags] = useState<DisclosureFlags>({
-    age: true,
-    jurisdiction: true,
-    kyc: true,
+    age: true,          // required by contract
+    jurisdiction: true, // required by contract
+    kyc: false,         // optional
   });
 
   const prover = useProver();
@@ -168,19 +168,24 @@ export default function ClaimPage() {
               <FlagCheckbox
                 label="Age >= 18"
                 checked={flags.age}
-                onChange={(v) => setFlags((f) => ({ ...f, age: v }))}
+                onChange={() => {}}
+                locked
               />
               <FlagCheckbox
                 label="Jurisdiction = HK"
                 checked={flags.jurisdiction}
-                onChange={(v) => setFlags((f) => ({ ...f, jurisdiction: v }))}
+                onChange={() => {}}
+                locked
               />
               <FlagCheckbox
-                label="KYC Level >= 1"
+                label="KYC Level >= 1 (optional)"
                 checked={flags.kyc}
                 onChange={(v) => setFlags((f) => ({ ...f, kyc: v }))}
               />
             </div>
+            <p className="text-[10px] text-text-muted mt-2">
+              Age and jurisdiction are required by this airdrop contract. KYC is optional -- toggle to prove more.
+            </p>
           </div>
         </div>
 
@@ -417,21 +422,25 @@ function FlagCheckbox({
   label,
   checked,
   onChange,
+  locked,
 }: {
   label: string;
   checked: boolean;
   onChange: (v: boolean) => void;
+  locked?: boolean;
 }) {
   return (
-    <label className="flex items-center gap-3 cursor-pointer group">
+    <label className={`flex items-center gap-3 group ${locked ? "cursor-default" : "cursor-pointer"}`}>
       <input
         type="checkbox"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
+        disabled={locked}
         className="checkbox-custom"
       />
-      <span className="text-sm text-text-secondary group-hover:text-text-primary transition-colors">
+      <span className={`text-sm transition-colors ${locked ? "text-text-muted" : "text-text-secondary group-hover:text-text-primary"}`}>
         {label}
+        {locked && <span className="ml-1.5 text-[10px] text-accent font-medium">REQUIRED</span>}
       </span>
     </label>
   );

@@ -7,9 +7,8 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /// @title ZKAirdrop
 /// @notice Identity-based airdrop with ZK proofs and sybil resistance.
-///         Users prove their identity via Groth16 proof (age, jurisdiction, KYC)
-///         and claim tokens exactly once per identity. Nullifier prevents
-///         the same person from claiming with multiple wallets.
+///         Users must prove age >= 18 AND jurisdiction = HK to claim.
+///         Nullifier prevents the same person from claiming with multiple wallets.
 ///
 /// @dev Public signals layout (8 total):
 ///   [0] nullifierHash      - Poseidon(holderSecret, externalNullifier)
@@ -27,6 +26,11 @@ contract ZKAirdrop {
     uint256 public immutable claimAmount;
     uint256 public immutable externalNullifier;
 
+    /// @notice Required disclosure flags (bit 0 = age, bit 1 = jurisdiction)
+    /// The contract enforces that these flags are set in the proof.
+    /// Users cannot bypass checks by unchecking flags.
+    uint256 public constant REQUIRED_FLAGS = 3; // 0b011 = age + jurisdiction
+
     uint256 public totalClaims;
     mapping(uint256 => bool) public usedNullifiers;
 
@@ -36,6 +40,7 @@ contract ZKAirdrop {
     error UntrustedIssuer();
     error AlreadyClaimed();
     error WrongNullifierScope();
+    error InsufficientDisclosure();
 
     constructor(
         address _verifier,
@@ -47,16 +52,10 @@ contract ZKAirdrop {
         registry = IssuerRegistry(_registry);
         token = IERC20(_token);
         claimAmount = _claimAmount;
-        // externalNullifier is derived from this contract's address
-        // so proofs are scoped to this specific airdrop
         externalNullifier = uint256(keccak256(abi.encodePacked(address(this)))) % 21888242871839275222246405745257275088548364400416034343698204186575808495617;
     }
 
     /// @notice Claim airdrop tokens by submitting a valid ZK identity proof.
-    /// @param a  Groth16 proof point A (G1)
-    /// @param b  Groth16 proof point B (G2)
-    /// @param c  Groth16 proof point C (G1)
-    /// @param publicSignals [nullifierHash, identityCommitment, minAge, allowedJurisdiction, minKycLevel, disclosureFlags, issuerPubKeyHash, externalNullifier]
     function claim(
         uint[2] calldata a,
         uint[2][2] calldata b,
@@ -66,20 +65,23 @@ contract ZKAirdrop {
         // 1. Verify the externalNullifier matches this airdrop
         if (publicSignals[7] != externalNullifier) revert WrongNullifierScope();
 
-        // 2. Verify ZK proof
+        // 2. Enforce required disclosure flags (age + jurisdiction must be proven)
+        if (publicSignals[5] & REQUIRED_FLAGS != REQUIRED_FLAGS) revert InsufficientDisclosure();
+
+        // 3. Verify ZK proof
         bool valid = verifier.verifyProof(a, b, c, publicSignals);
         if (!valid) revert InvalidProof();
 
-        // 3. Check issuer is trusted
+        // 4. Check issuer is trusted
         uint256 issuerHash = publicSignals[6];
         if (!registry.isActiveIssuer(issuerHash)) revert UntrustedIssuer();
 
-        // 4. Check nullifier not used (sybil resistance)
+        // 5. Check nullifier not used (sybil resistance)
         uint256 nullifier = publicSignals[0];
         if (usedNullifiers[nullifier]) revert AlreadyClaimed();
         usedNullifiers[nullifier] = true;
 
-        // 5. Transfer airdrop tokens
+        // 6. Transfer airdrop tokens
         totalClaims++;
         token.transfer(msg.sender, claimAmount);
 
