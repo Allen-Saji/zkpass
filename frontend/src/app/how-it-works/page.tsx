@@ -70,7 +70,7 @@ signature = EdDSA.sign(issuerPrivateKey, credHash)
           </p>
           <Callout type="info">
             In this demo, the issuer is a Next.js API route. In production, it would be a licensed
-            KYC provider like HashKey, Jumio, or Sumsub.
+            KYC provider like Jumio, Sumsub, or Civic.
           </Callout>
         </Section>
 

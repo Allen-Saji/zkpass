@@ -86,7 +86,7 @@ export default function IssuePage() {
           </div>
 
           <p className="text-xs text-text-muted mb-6">
-            In production, this would be a licensed KYC provider (e.g., HashKey, Jumio).
+            In production, this would be a licensed KYC provider (e.g., Jumio, Sumsub, Civic).
             The credential is signed server-side with the issuer&apos;s private key.
           </p>
 
