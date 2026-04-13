@@ -1,85 +1,118 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { Credential } from "@/lib/types";
-import { useZKEngine } from "@/hooks/useZKEngine";
-import { ZKEngineBadge } from "@/components/ZKEngineBadge";
-import { CredentialPanel } from "@/components/CredentialPanel";
-import { ProvePanel } from "@/components/ProvePanel";
-import { Footer } from "@/components/Footer";
+import Link from "next/link";
+import { Shield, UserCheck, Fingerprint, Coins, ArrowRight } from "lucide-react";
 
-export default function Home() {
-  const zkEngine = useZKEngine();
-  const [credential, setCredential] = useState<Credential | null>(null);
-  const [loadingCred, setLoadingCred] = useState(false);
-
-  const handleLoadCredential = useCallback(async () => {
-    setLoadingCred(true);
-    try {
-      const res = await fetch("/credential.json");
-      if (!res.ok) throw new Error("Failed to load credential");
-      const data = await res.json();
-      setCredential(data);
-    } catch (err) {
-      console.error("Failed to load credential:", err);
-    } finally {
-      setLoadingCred(false);
-    }
-  }, []);
-
+export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="w-full py-6 px-4">
-        <div className="max-w-[1200px] mx-auto flex items-center justify-between">
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: "0ms", animationFillMode: "both" }}
+    <div className="max-w-5xl mx-auto px-6 py-16">
+      {/* Hero */}
+      <div className="text-center mb-20 animate-fade-in-up">
+        <h1 className="text-5xl font-extrabold tracking-tight mb-4">
+          Airdrops for <span className="text-accent">people</span>,<br />
+          not wallets.
+        </h1>
+        <p className="text-lg text-text-secondary max-w-2xl mx-auto mb-8">
+          100 wallets, 1 person, 100 claims. That&apos;s broken.
+          ZKPass ties airdrop eligibility to verified identity -- not addresses.
+          Prove you&apos;re a real person, claim once. Zero data leaked.
+        </p>
+        <div className="flex items-center justify-center gap-4">
+          <Link
+            href="/issue"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-bg-base font-semibold rounded-xl hover:brightness-110 transition-all"
           >
-            <h1 className="text-[28px] font-extrabold leading-none tracking-tight">
-              <span className="text-white">zk</span>
-              <span className="text-accent">pass</span>
-            </h1>
-          </div>
-          <div
-            className="animate-fade-in-up"
-            style={{ animationDelay: "50ms", animationFillMode: "both" }}
+            Get Started
+            <ArrowRight className="w-4 h-4" />
+          </Link>
+          <Link
+            href="/claim"
+            className="inline-flex items-center gap-2 px-6 py-3 border border-border text-text-secondary font-medium rounded-xl hover:border-border-hover hover:text-text-primary transition-all"
           >
-            <ZKEngineBadge
-              ready={zkEngine.ready}
-              loading={zkEngine.loading}
-              error={zkEngine.error}
-              sizeLoaded={zkEngine.sizeLoaded}
-            />
-          </div>
-        </div>
-      </header>
-
-      {/* Tagline */}
-      <div className="px-4 pb-8">
-        <div className="max-w-[1200px] mx-auto">
-          <p
-            className="text-lg text-text-secondary animate-fade-in-up"
-            style={{ animationDelay: "50ms", animationFillMode: "both" }}
-          >
-            Prove who you are. Reveal nothing else.
-          </p>
+            Claim Airdrop
+          </Link>
         </div>
       </div>
 
-      {/* Main content */}
-      <main className="flex-1 px-4 pb-12">
-        <div className="max-w-[1200px] mx-auto grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <CredentialPanel
-            credential={credential}
-            onLoad={handleLoadCredential}
-            loading={loadingCred}
+      {/* How it works */}
+      <div className="mb-20">
+        <h2 className="text-sm font-semibold text-accent uppercase tracking-widest text-center mb-10">
+          How it works
+        </h2>
+        <div className="grid md:grid-cols-3 gap-6">
+          <StepCard
+            icon={<UserCheck className="w-6 h-6" />}
+            step="01"
+            title="Get Verified"
+            description="A trusted KYC provider verifies your identity and signs a credential with EdDSA. Your data stays with you."
+            delay={0}
           />
-          <ProvePanel credential={credential} zkReady={zkEngine.ready} />
+          <StepCard
+            icon={<Fingerprint className="w-6 h-6" />}
+            step="02"
+            title="Generate ZK Proof"
+            description="Prove you meet requirements (age, jurisdiction, KYC) without revealing actual values. Proof generated in your browser."
+            delay={100}
+          />
+          <StepCard
+            icon={<Coins className="w-6 h-6" />}
+            step="03"
+            title="Claim Once"
+            description="Submit your proof on-chain. The nullifier ensures one claim per identity -- regardless of how many wallets you have."
+            delay={200}
+          />
         </div>
-      </main>
+      </div>
 
-      <Footer />
+      {/* Architecture callout */}
+      <div className="rounded-2xl border border-border bg-bg-surface p-8 text-center">
+        <Shield className="w-8 h-8 text-accent mx-auto mb-4" />
+        <h3 className="text-xl font-bold mb-2">Built with real cryptography</h3>
+        <p className="text-text-secondary max-w-xl mx-auto text-sm">
+          Groth16 ZK proofs over BN254. EdDSA credential signatures on Baby JubJub.
+          On-chain issuer registry. Poseidon-based nullifiers for sybil resistance.
+          10,303 constraints. Verified on HashKey Chain.
+        </p>
+        <div className="flex items-center justify-center gap-6 mt-6 text-xs text-text-muted font-mono">
+          <span>Circom 2.0</span>
+          <span className="text-border">|</span>
+          <span>snarkjs</span>
+          <span className="text-border">|</span>
+          <span>Solidity 0.8.20</span>
+          <span className="text-border">|</span>
+          <span>HashKey Chain</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StepCard({
+  icon,
+  step,
+  title,
+  description,
+  delay,
+}: {
+  icon: React.ReactNode;
+  step: string;
+  title: string;
+  description: string;
+  delay: number;
+}) {
+  return (
+    <div
+      className="rounded-2xl border border-border bg-bg-surface p-6 animate-fade-in-up"
+      style={{ animationDelay: `${delay}ms` }}
+    >
+      <div className="flex items-center gap-3 mb-3">
+        <div className="w-10 h-10 rounded-xl bg-accent-dim flex items-center justify-center text-accent">
+          {icon}
+        </div>
+        <span className="text-xs font-mono text-text-muted">{step}</span>
+      </div>
+      <h3 className="font-bold text-lg mb-2">{title}</h3>
+      <p className="text-sm text-text-secondary leading-relaxed">{description}</p>
     </div>
   );
 }

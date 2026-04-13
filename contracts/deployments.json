@@ -3,6 +3,18 @@
     "chainId": 133,
     "rpcUrl": "https://testnet.hsk.xyz",
     "explorer": "https://testnet-explorer.hsk.xyz",
+    "Groth16Verifier": "0xae0c2972AC42CB49c089D6E460Bcf0becE1d8C21",
+    "IssuerRegistry": "0xbe34bd0c1702F47CCAE18771D6c45d8e56654F83",
+    "ZKToken": "0x8F16b88998Fc801ba5393523de5D27d3191F4C94",
+    "ZKAirdrop": "0x65C77e41838409FD32D4Bd040a9FEC7B0574426d",
+    "externalNullifier": "4084693458823302036348996913704485430044101317082931210579043319749712868981",
+    "claimAmount": "100",
+    "issuerPubKeyHash": "8093821485214269328389004542394237209037452657522929891144731833981969398000",
+    "deployedAt": "2026-04-13"
+  },
+  "hashkeyTestnet_v1": {
+    "chainId": 133,
+    "note": "v1 deployment (old pool-based demo)",
     "Groth16Verifier": "0xba1D2B7A58Be84fCc07e1cC085AB39cB495604F2",
     "ZKGatedPool": "0x50193Ff688db42c98f3cFb2B49E5FAD4236cb1Cd",
     "deployedAt": "2026-04-11"

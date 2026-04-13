@@ -3,6 +3,7 @@ export interface Credential {
   age: number;
   jurisdictionCode: number;
   kycLevel: number;
+  identityCommitment: string;
   issuedAt: string;
   signature: {
     R8: [string, string];
@@ -24,11 +25,13 @@ export interface WitnessInput {
   kycLevel: string;
   issuerPubKey: [string, string];
   issuerSig: [string, string, string];
+  holderSecret: string;
   minAge: string;
   allowedJurisdiction: string;
   minKycLevel: string;
   disclosureFlags: string;
   issuerPubKeyHash: string;
+  externalNullifier: string;
 }
 
 export interface ProofResult {
@@ -52,7 +55,7 @@ export type ProveStatus =
   | "done"
   | "error";
 
-export type PoolStatus =
+export type ClaimStatus =
   | "idle"
   | "connecting"
   | "switching-chain"
@@ -60,3 +63,9 @@ export type PoolStatus =
   | "confirming"
   | "done"
   | "error";
+
+export interface AirdropStats {
+  totalClaims: number;
+  remainingTokens: string;
+  claimAmount: string;
+}

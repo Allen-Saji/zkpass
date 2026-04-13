@@ -160,6 +160,30 @@ body {
   }
 }
 
+/* Passport card shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.passport-shimmer {
+  background: linear-gradient(
+    120deg,
+    transparent 0%,
+    rgba(108, 255, 50, 0.08) 25%,
+    rgba(108, 255, 50, 0.15) 50%,
+    rgba(108, 255, 50, 0.08) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 4s ease-in-out infinite;
+}
+
+.passport-card {
+  background: linear-gradient(135deg, var(--bg-surface) 0%, rgba(26, 27, 31, 0.8) 100%);
+  box-shadow: 0 0 0 1px rgba(108, 255, 50, 0.1), 0 4px 24px rgba(0, 0, 0, 0.4);
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;

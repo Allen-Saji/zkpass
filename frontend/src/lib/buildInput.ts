@@ -1,4 +1,5 @@
 import { Credential, DisclosureFlags, WitnessInput } from "./types";
+import { EXTERNAL_NULLIFIER } from "./constants";
 
 export function computeDisclosureFlags(flags: DisclosureFlags): number {
   let bitmask = 0;
@@ -10,7 +11,8 @@ export function computeDisclosureFlags(flags: DisclosureFlags): number {
 
 export function buildWitnessInput(
   credential: Credential,
-  flags: DisclosureFlags
+  flags: DisclosureFlags,
+  holderSecret: string
 ): WitnessInput {
   const disclosureFlags = computeDisclosureFlags(flags);
 
@@ -24,17 +26,17 @@ export function buildWitnessInput(
       credential.signature.R8[1],
       credential.signature.S,
     ],
+    holderSecret,
     minAge: "18",
     allowedJurisdiction: "852",
     minKycLevel: "1",
     disclosureFlags: disclosureFlags.toString(),
     issuerPubKeyHash: credential.issuerPubKeyHash,
+    externalNullifier: EXTERNAL_NULLIFIER,
   };
 }
 
 export function parseCalldata(calldata: string) {
-  // snarkjs.groth16.exportSolidityCallData returns a string like:
-  // "["0x..","0x.."],[[...],[...]],["0x..","0x.."],["0x..","0x..","0x..","0x..","0x.."]"
   const parsed = JSON.parse(`[${calldata}]`);
   const a: [bigint, bigint] = [BigInt(parsed[0][0]), BigInt(parsed[0][1])];
   const b: [[bigint, bigint], [bigint, bigint]] = [
@@ -42,13 +44,7 @@ export function parseCalldata(calldata: string) {
     [BigInt(parsed[1][1][0]), BigInt(parsed[1][1][1])],
   ];
   const c: [bigint, bigint] = [BigInt(parsed[2][0]), BigInt(parsed[2][1])];
-  const signals: [bigint, bigint, bigint, bigint, bigint] = [
-    BigInt(parsed[3][0]),
-    BigInt(parsed[3][1]),
-    BigInt(parsed[3][2]),
-    BigInt(parsed[3][3]),
-    BigInt(parsed[3][4]),
-  ];
+  const signals: bigint[] = parsed[3].map((s: string) => BigInt(s));
 
   return { a, b, c, signals };
 }

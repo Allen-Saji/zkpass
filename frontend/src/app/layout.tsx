@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { NavBar } from "@/components/NavBar";
 import "./globals.css";
 
 const plusJakarta = Plus_Jakarta_Sans({
@@ -10,9 +11,9 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "zkpass — Zero-Knowledge Identity Passport",
+  title: "zkpass -- Zero-Knowledge Identity Passport",
   description:
-    "Prove who you are. Reveal nothing else. ZK-powered identity verification on HashKey Chain.",
+    "Identity-based airdrops. Not wallets. People. ZK-powered sybil-resistant identity on HashKey Chain.",
 };
 
 export default function RootLayout({
@@ -22,7 +23,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${plusJakarta.variable} h-full antialiased`} style={{ colorScheme: "dark" }}>
-      <body className="min-h-full flex flex-col font-sans">{children}</body>
+      <body className="min-h-full flex flex-col font-sans">
+        <NavBar />
+        <main className="flex-1">{children}</main>
+      </body>
     </html>
   );
 }

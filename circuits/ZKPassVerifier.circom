@@ -6,9 +6,13 @@ include "../node_modules/circomlib/circuits/comparators.circom";
 include "../node_modules/circomlib/circuits/bitify.circom";
 
 // ZKPass: Multi-attribute selective disclosure identity verifier
-// Proves user attributes (age, jurisdiction, KYC level) meet requirements
-// without revealing the actual values. Disclosure flags control which
-// checks are enforced via a 3-bit bitmask.
+// with holder binding and nullifier-based sybil resistance.
+//
+// Proves:
+// 1. Credential was signed by a trusted issuer (EdDSA over Poseidon hash)
+// 2. Credential is bound to the holder (identityCommitment in credential hash)
+// 3. Selected attributes meet requirements (age, jurisdiction, KYC)
+// 4. Deterministic nullifier for sybil resistance (one claim per identity per scope)
 template ZKPassVerifier() {
     // --- Private inputs (known only to prover) ---
     signal input age;
@@ -16,6 +20,7 @@ template ZKPassVerifier() {
     signal input kycLevel;
     signal input issuerPubKey[2];    // Baby JubJub public key [Ax, Ay]
     signal input issuerSig[3];       // EdDSA signature [R8x, R8y, S]
+    signal input holderSecret;       // holder's secret (never revealed)
 
     // --- Public inputs (visible to verifier / on-chain) ---
     signal input minAge;
@@ -23,21 +28,40 @@ template ZKPassVerifier() {
     signal input minKycLevel;
     signal input disclosureFlags;    // 3-bit bitmask: bit0=age, bit1=jurisdiction, bit2=kyc
     signal input issuerPubKeyHash;
+    signal input externalNullifier;  // scope identifier (e.g. airdrop contract address hash)
 
-    // === 1. Compute credential hash (Poseidon of attributes) ===
-    component credHash = Poseidon(3);
+    // --- Public outputs ---
+    signal output nullifierHash;     // Poseidon(holderSecret, externalNullifier) -- sybil resistance
+    signal output identityCommitment; // Poseidon(holderSecret) -- binds credential to holder
+
+    // === 1. Compute identity commitment (holder binding) ===
+    component idCommitment = Poseidon(1);
+    idCommitment.inputs[0] <== holderSecret;
+    identityCommitment <== idCommitment.out;
+
+    // === 2. Compute nullifier hash (sybil resistance) ===
+    // Deterministic per (identity, scope): same identity + same airdrop = same nullifier
+    component nullifier = Poseidon(2);
+    nullifier.inputs[0] <== holderSecret;
+    nullifier.inputs[1] <== externalNullifier;
+    nullifierHash <== nullifier.out;
+
+    // === 3. Compute credential hash (includes identity commitment) ===
+    // Credential is bound to the holder -- useless without holderSecret
+    component credHash = Poseidon(4);
     credHash.inputs[0] <== age;
     credHash.inputs[1] <== jurisdictionCode;
     credHash.inputs[2] <== kycLevel;
+    credHash.inputs[3] <== identityCommitment;
 
-    // === 2. Verify issuer public key matches expected hash ===
+    // === 4. Verify issuer public key matches expected hash ===
     component pubKeyHash = Poseidon(2);
     pubKeyHash.inputs[0] <== issuerPubKey[0];
     pubKeyHash.inputs[1] <== issuerPubKey[1];
     pubKeyHash.out === issuerPubKeyHash;
 
-    // === 3. Verify EdDSA signature over credential hash ===
-    // This ensures the credential was signed by the trusted issuer
+    // === 5. Verify EdDSA signature over credential hash ===
+    // Issuer signed Poseidon(age, jurisdiction, kycLevel, identityCommitment)
     component sigVerify = EdDSAPoseidonVerifier();
     sigVerify.enabled <== 1;
     sigVerify.Ax <== issuerPubKey[0];
@@ -47,14 +71,14 @@ template ZKPassVerifier() {
     sigVerify.S <== issuerSig[2];
     sigVerify.M <== credHash.out;
 
-    // === 4. Decompose disclosure flags into individual bits ===
+    // === 6. Decompose disclosure flags into individual bits ===
     component flagBits = Num2Bits(3);
     flagBits.in <== disclosureFlags;
     // flagBits.out[0] = age flag
     // flagBits.out[1] = jurisdiction flag
     // flagBits.out[2] = kyc flag
 
-    // === 5. Selective disclosure checks ===
+    // === 7. Selective disclosure checks ===
     // Pattern: flag * (1 - check.out) === 0
     // When flag=1: check.out must be 1 (constraint enforced)
     // When flag=0: constraint is trivially satisfied (check skipped)
@@ -78,4 +102,4 @@ template ZKPassVerifier() {
     flagBits.out[2] * (1 - kycCheck.out) === 0;
 }
 
-component main {public [minAge, allowedJurisdiction, minKycLevel, disclosureFlags, issuerPubKeyHash]} = ZKPassVerifier();
+component main {public [minAge, allowedJurisdiction, minKycLevel, disclosureFlags, issuerPubKeyHash, externalNullifier]} = ZKPassVerifier();
