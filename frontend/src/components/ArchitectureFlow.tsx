@@ -60,7 +60,7 @@ export function ArchitectureFlow() {
         {/* Arrow 1: Issuer -> Credential */}
         <line x1="180" y1="110" x2="220" y2="110" className={`flow-line ${activeStep === 0 ? "flow-line-active" : ""}`} stroke={activeStep === 0 ? "#6CFF32" : "rgba(255,255,255,0.15)"} strokeWidth="2" />
         <polygon points="218,105 228,110 218,115" fill={activeStep === 0 ? "#6CFF32" : "rgba(255,255,255,0.15)"} />
-        {activeStep === 0 && <text x="200" y="100" textAnchor="middle" fill="#6CFF32" fontSize="8" fontFamily="monospace">credential</text>}
+        {activeStep === 0 && <text x="205" y="95" textAnchor="start" fill="#6CFF32" fontSize="9" fontFamily="monospace">credential</text>}
 
         {/* Step 2: Credential + Secret */}
         <g className={activeStep === 1 ? "node-pulse" : ""}>
