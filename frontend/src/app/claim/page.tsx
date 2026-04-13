@@ -19,6 +19,7 @@ import {
   ExternalLink,
   RefreshCw,
   ShieldAlert,
+  XCircle,
   Zap,
 } from "lucide-react";
 import Link from "next/link";
@@ -328,12 +329,47 @@ export default function ClaimPage() {
                 <span className="text-sm font-medium text-error">
                   {claim.error?.includes("AlreadyClaimed")
                     ? "Already Claimed!"
+                    : prover.error?.includes("Assert Failed")
+                    ? "Proof Generation Failed"
                     : "Error"}
                 </span>
               </div>
               <p className="text-xs text-text-secondary">
-                {claim.error || prover.error}
+                {prover.error?.includes("Assert Failed")
+                  ? "Your credential does not satisfy the selected disclosure checks. This can happen if:"
+                  : claim.error || prover.error}
               </p>
+              {prover.error?.includes("Assert Failed") && (
+                <ul className="text-xs text-text-secondary mt-2 space-y-1 list-none">
+                  {flags.age && (
+                    <li className="flex items-center gap-1.5">
+                      {selectedCredential && selectedCredential.age >= 18
+                        ? <CheckCircle className="w-3 h-3 text-accent flex-shrink-0" />
+                        : <XCircle className="w-3 h-3 text-error flex-shrink-0" />}
+                      Age {'>='} 18 (yours: {selectedCredential?.age})
+                    </li>
+                  )}
+                  {flags.jurisdiction && (
+                    <li className="flex items-center gap-1.5">
+                      {selectedCredential && selectedCredential.jurisdictionCode === 852
+                        ? <CheckCircle className="w-3 h-3 text-accent flex-shrink-0" />
+                        : <XCircle className="w-3 h-3 text-error flex-shrink-0" />}
+                      Jurisdiction = HK/852 (yours: {selectedCredential?.jurisdictionCode})
+                    </li>
+                  )}
+                  {flags.kyc && (
+                    <li className="flex items-center gap-1.5">
+                      {selectedCredential && selectedCredential.kycLevel >= 1
+                        ? <CheckCircle className="w-3 h-3 text-accent flex-shrink-0" />
+                        : <XCircle className="w-3 h-3 text-error flex-shrink-0" />}
+                      KYC Level {'>='} 1 (yours: {selectedCredential?.kycLevel})
+                    </li>
+                  )}
+                  <li className="text-text-muted pt-1">
+                    Uncheck failing attributes or re-issue your credential with correct values.
+                  </li>
+                </ul>
+              )}
               <button
                 onClick={() => {
                   claim.reset();
