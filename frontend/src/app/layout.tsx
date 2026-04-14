@@ -10,10 +10,52 @@ const plusJakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
+const SITE_URL = "https://zkpass.allensaji.dev";
+
 export const metadata: Metadata = {
-  title: "zkpass -- Zero-Knowledge Identity Passport",
+  title: {
+    default: "ZKPass - Zero-Knowledge Identity Protocol",
+    template: "%s | ZKPass",
+  },
   description:
-    "Identity-based airdrops. Not wallets. People. ZK-powered sybil-resistant identity on HashKey Chain.",
+    "Prove who you are. Reveal nothing. ZK-powered selective disclosure, holder binding, and sybil-resistant identity on HashKey Chain.",
+  metadataBase: new URL(SITE_URL),
+  keywords: [
+    "zero-knowledge proof",
+    "ZKP",
+    "identity",
+    "sybil resistance",
+    "Groth16",
+    "Circom",
+    "HashKey Chain",
+    "airdrop",
+    "selective disclosure",
+    "EdDSA",
+    "Poseidon",
+    "nullifier",
+  ],
+  authors: [{ name: "Allen Saji", url: "https://allensaji.dev" }],
+  creator: "Allen Saji",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: SITE_URL,
+    siteName: "ZKPass",
+    title: "ZKPass - Zero-Knowledge Identity Protocol",
+    description:
+      "Prove who you are. Reveal nothing. ZK-powered selective disclosure, holder binding, and sybil-resistant identity on HashKey Chain.",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ZKPass - Zero-Knowledge Identity Protocol",
+    description:
+      "Prove who you are. Reveal nothing. ZK-powered selective disclosure and sybil-resistant identity.",
+    creator: "@SajiBhai011",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
