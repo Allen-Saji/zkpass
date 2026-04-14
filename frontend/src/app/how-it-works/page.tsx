@@ -127,7 +127,7 @@ identityCommitment = Poseidon(holderSecret)
           <p>
             A 3-bit bitmask controls which attributes are proven:
           </p>
-          <div className="grid grid-cols-3 gap-3 my-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 my-4">
             <BitmaskCard bit={0} label="Age >= 18" example="0b001 = 1" />
             <BitmaskCard bit={1} label="Jurisdiction = HK" example="0b010 = 2" />
             <BitmaskCard bit={2} label="KYC >= 1" example="0b100 = 4" />
@@ -299,7 +299,7 @@ function Section({
           <p className="text-xs text-text-muted">{subtitle}</p>
         </div>
       </div>
-      <div className="pl-[52px] space-y-3 text-sm text-text-secondary leading-relaxed">
+      <div className="pl-0 sm:pl-[52px] space-y-3 text-sm text-text-secondary leading-relaxed mt-3 sm:mt-0">
         {children}
       </div>
     </section>
@@ -386,12 +386,12 @@ function ConstraintRow({
   description: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-lg bg-bg-base border border-border px-4 py-2.5">
+    <div className="flex items-start sm:items-center gap-3 rounded-lg bg-bg-base border border-border px-3 sm:px-4 py-2.5">
       <span className="font-mono text-xs text-accent w-16 text-right flex-shrink-0">{constraints}</span>
-      <div className="w-px h-6 bg-border" />
-      <div>
+      <div className="w-px h-6 bg-border flex-shrink-0" />
+      <div className="min-w-0">
         <span className="text-sm font-medium">{name}</span>
-        <span className="text-xs text-text-muted ml-2">{description}</span>
+        <span className="text-xs text-text-muted sm:ml-2 block sm:inline">{description}</span>
       </div>
     </div>
   );

@@ -19,27 +19,27 @@ export default function HomePage() {
     <div className="max-w-5xl mx-auto px-6 py-16">
       {/* Hero */}
       <div className="text-center mb-20 animate-fade-in-up">
-        <h1 className="text-5xl font-extrabold tracking-tight mb-4">
+        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mb-4">
           Prove who you are.
           <br />
           <span className="text-accent">Reveal nothing.</span>
         </h1>
-        <p className="text-lg text-text-secondary max-w-2xl mx-auto mb-8">
+        <p className="text-base md:text-lg text-text-secondary max-w-2xl mx-auto mb-8">
           ZKPass is a zero-knowledge identity protocol. Get a credential once,
           prove any attribute on any chain -- without exposing your data.
           Selective disclosure, holder binding, sybil resistance. All in the browser.
         </p>
-        <div className="flex items-center justify-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Link
             href="/issue"
-            className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-bg-base font-semibold rounded-xl hover:brightness-110 transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-accent text-bg-base font-semibold rounded-xl hover:brightness-110 transition-all w-full sm:w-auto justify-center"
           >
             Try the Demo
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             href="/wallet"
-            className="inline-flex items-center gap-2 px-6 py-3 border border-border text-text-secondary font-medium rounded-xl hover:border-border-hover hover:text-text-primary transition-all"
+            className="inline-flex items-center gap-2 px-6 py-3 border border-border text-text-secondary font-medium rounded-xl hover:border-border-hover hover:text-text-primary transition-all w-full sm:w-auto justify-center"
           >
             Open Wallet
           </Link>
@@ -139,13 +139,13 @@ export default function HomePage() {
           Poseidon hashing for credentials, nullifiers, and identity commitments.
           10,303 constraints. Verified on HashKey Chain.
         </p>
-        <div className="flex items-center justify-center gap-6 mt-6 text-xs text-text-muted font-mono">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1 mt-6 text-xs text-text-muted font-mono">
           <span>Circom 2.0</span>
-          <span className="text-border">|</span>
+          <span className="text-border hidden sm:inline">|</span>
           <span>snarkjs</span>
-          <span className="text-border">|</span>
+          <span className="text-border hidden sm:inline">|</span>
           <span>Solidity 0.8.20</span>
-          <span className="text-border">|</span>
+          <span className="text-border hidden sm:inline">|</span>
           <span>HashKey Chain</span>
         </div>
       </div>

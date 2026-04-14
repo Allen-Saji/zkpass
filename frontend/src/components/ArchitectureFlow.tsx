@@ -17,7 +17,7 @@ export function ArchitectureFlow() {
     <div className="w-full overflow-x-auto">
       <svg
         viewBox="0 0 900 340"
-        className="w-full min-w-[700px]"
+        className="w-full min-w-[600px]"
         xmlns="http://www.w3.org/2000/svg"
       >
         <defs>

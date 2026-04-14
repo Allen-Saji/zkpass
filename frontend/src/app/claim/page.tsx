@@ -106,7 +106,7 @@ export default function ClaimPage() {
       </div>
 
       {/* Stats bar */}
-      <div className="grid grid-cols-3 gap-4 mb-8 animate-fade-in-up">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 animate-fade-in-up">
         <StatCard
           label="Claims Made"
           value={statsLoading ? "..." : stats?.totalClaims.toString() || "0"}

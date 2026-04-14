@@ -161,11 +161,11 @@ export default function WalletPage() {
       </div>
 
       {/* Actions bar */}
-      <div className="flex items-center justify-between mb-6 animate-fade-in-up" style={{ animationDelay: "50ms" }}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 animate-fade-in-up" style={{ animationDelay: "50ms" }}>
         <h2 className="text-sm font-semibold text-text-secondary uppercase tracking-wider">
           Credentials ({credentials.length})
         </h2>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={handleExportBackup}
             disabled={credentials.length === 0}
